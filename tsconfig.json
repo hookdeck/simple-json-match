@@ -5,6 +5,6 @@
     "declaration": true,
     "outDir": "./lib"
   },
-  "include": ["src", "tests"],
-  "exclude": ["node_modules", "**/__tests__/*"]
+  "include": ["src", "src/tests"],
+  "exclude": ["node_modules", "**/tests/*"]
 }

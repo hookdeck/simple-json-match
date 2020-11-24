@@ -14,9 +14,9 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --quiet",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --quiet",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "eslint src --ext .ts --quiet",
+    "lint:fix": "eslint src --ext .ts --fix --quiet",
+    "format": "prettier src --write \"src/**/*.ts\"",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
