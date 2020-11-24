@@ -1,4 +1,4 @@
-import matchJsonToSchema from '../matchJson';
+import matchJsonToSchema from '../src/index';
 
 describe('matchJsonToSchema.test.ts', () => {
   const tests = [
