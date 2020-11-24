@@ -4,14 +4,10 @@ export const getJSONType = (v: JSONType): JSONTypeKey => {
   if (v === null) {
     return 'null';
   }
-  const js_type = typeof v;
-  const primitive_type = ['number', 'string', 'boolean'].find(
-    (type) => type === js_type
-  );
-  if (primitive_type) {
-    return primitive_type as 'number', 'string', 'boolean';
+  if (['number', 'string', 'boolean'].includes(typeof v)) {
+    return typeof v as 'number' | 'string' | 'boolean';
   }
-  if (Array.isArray(js_type)) {
+  if (Array.isArray(v)) {
     return 'array';
   }
   return 'object';

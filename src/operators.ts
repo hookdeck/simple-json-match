@@ -1,4 +1,4 @@
-import { JSONType, Operator, Primitive } from '.';
+import { Operator } from '.';
 import { isPrimitiveType, supportedType } from './utils';
 
 const operators: {
@@ -28,19 +28,19 @@ const operators: {
       !supportedType(v, ['array', 'string']) ||
       !supportedType(compare, ['number', 'string', 'boolean', 'null'])
     ) {
-      throw new Error('Unsupported types for $in operator');
+      throw new Error('Unsupported types for $nin operator');
     }
     return !(v as string | any[]).includes(compare as any);
   },
   $startsWith: (v, compare) => {
     if (!supportedType(v, ['string']) || !supportedType(compare, ['string'])) {
-      throw new Error('Unsupported types for $in operator');
+      throw new Error('Unsupported types for $startsWith operator');
     }
     return (v as string).startsWith(compare as string);
   },
   $endsWith: (v, compare) => {
     if (!supportedType(v, ['string']) || !supportedType(compare, ['string'])) {
-      throw new Error('Unsupported types for $in operator');
+      throw new Error('Unsupported types for $endsWith operator');
     }
     return (v as string).endsWith(compare as string);
   },
@@ -49,7 +49,7 @@ const operators: {
       !supportedType(v, ['string', 'number']) ||
       !supportedType(compare, ['string', 'number'])
     ) {
-      throw new Error('Unsupported types for $in operator');
+      throw new Error('Unsupported types for $gte operator');
     }
     return v >= compare;
   },
@@ -58,7 +58,7 @@ const operators: {
       !supportedType(v, ['string', 'number']) ||
       !supportedType(compare, ['string', 'number'])
     ) {
-      throw new Error('Unsupported types for $in operator');
+      throw new Error('Unsupported types for $gt operator');
     }
     return v > compare;
   },
@@ -67,7 +67,7 @@ const operators: {
       !supportedType(v, ['string', 'number']) ||
       !supportedType(compare, ['string', 'number'])
     ) {
-      throw new Error('Unsupported types for $in operator');
+      throw new Error('Unsupported types for $lte operator');
     }
     return v <= compare;
   },
@@ -76,7 +76,7 @@ const operators: {
       !supportedType(v, ['string', 'number']) ||
       !supportedType(compare, ['string', 'number'])
     ) {
-      throw new Error('Unsupported types for $in operator');
+      throw new Error('Unsupported types for $lt operator');
     }
     return v < compare;
   },
