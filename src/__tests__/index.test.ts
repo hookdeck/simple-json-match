@@ -19,8 +19,16 @@ describe('matchJsonToSchema.test.ts', () => {
     [{ title: 'c' }, { title: { $gt: 'b' } }, true],
     [{ type: 'created' }, { type: { $neq: 'created' } }, false],
     [{ type: 'created' }, { type: { $eq: 'created' } }, true],
-    [{ type: { something: 'created' } }, { type: { something: 'created' } }, true],
-    [{ type: { something: 'created' } }, { type: { something: 'updated' } }, false],
+    [
+      { type: { something: 'created' } },
+      { type: { something: 'created' } },
+      true,
+    ],
+    [
+      { type: { something: 'created' } },
+      { type: { something: 'updated' } },
+      false,
+    ],
     [{ type: { something: 'created' } }, { type: 1 }, false],
     [{ tags: ['test', 'other'] }, { tags: 'test' }, true],
     [{ tags: ['test', 'other'] }, { tags: 'nope' }, false],
@@ -37,9 +45,17 @@ describe('matchJsonToSchema.test.ts', () => {
       false,
     ],
     [{ tags: ['test', 'other', 'more'] }, { tags: ['test', 'other'] }, true],
-    [{ tags: ['test', 'other', 'more'] }, { tags: ['test', 'whatever'] }, false],
+    [
+      { tags: ['test', 'other', 'more'] },
+      { tags: ['test', 'whatever'] },
+      false,
+    ],
     [{ tags: ['test', 'other'] }, { tags: { $eq: ['test', 'other'] } }, true],
-    [{ tags: ['test', 'other', 'more'] }, { tags: { $eq: ['test', 'other'] } }, false],
+    [
+      { tags: ['test', 'other', 'more'] },
+      { tags: { $eq: ['test', 'other'] } },
+      false,
+    ],
     [{ exist: true }, { exist: true }, true],
     [{ exist: true }, { exist: false }, false],
     [{ exist: null }, { exist: null }, true],
@@ -68,7 +84,9 @@ describe('matchJsonToSchema.test.ts', () => {
   ];
 
   tests.forEach(([input, schema, match], i) => {
-    it(`Correctly matches ${JSON.stringify(input)} with ${JSON.stringify(schema)}`, async () => {
+    it(`Correctly matches ${JSON.stringify(input)} with ${JSON.stringify(
+      schema
+    )}`, async () => {
       expect(matchJsonToSchema(input as any, schema as any)).toBe(match);
     });
   });

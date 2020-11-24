@@ -22,7 +22,11 @@ export type JSONTypeKey =
   | 'array';
 
 export type Primitive = number | null | string | boolean;
-export type JSONType = Primitive | Primitive[] | object | object[];
+export type JSONType =
+  | Primitive
+  | Primitive[]
+  | Record<string, unknown>
+  | Record<string, unknown>[];
 
 export type SchemaObject =
   | {
