@@ -22,7 +22,7 @@ Typescript definitions are provided within the package.
 
 `simple-match-json` exports a single method to evaluate the match between a JSON document and the input schema.
 
-```json
+```js
 import matchJSONToSchema from 'simple-json-match'
 
 const product = {
@@ -41,15 +41,15 @@ matchJSONToSchema(product, schema) // true
 
 matchJSONToSchema supports raw `string` `boolean` `number` or `null` and the library Schema JSON syntax.
 
-```json
+```js
 matchJSONToSchema(true, true) // true
 ```
 
-```json
+```js
 matchJSONToSchema(true, false) // false
 ```
 
-```json
+```js
 matchJSONToSchema({ "test": true }, { "test": false }) // false
 ```
 
@@ -61,7 +61,7 @@ JSON filter supports matching on any value (`string` `number` `boolean` `null`),
 
 Simple primitive are `string`, `number`, `boolean` or `null` that will be matched if equal.
 
-```json
+```js
 const product = {
   "type": "order/created",
   "order": {
@@ -80,7 +80,7 @@ matchJSONToSchema(product, schema) // true
 
 Just like normal JSON, objects can be nested
 
-```json
+```js
 const product = {
   "product": {
     "title": "A product",
@@ -101,7 +101,7 @@ matchJSONToSchema(product, schema) // true
 
 Arrays are always matched partially. It's effectively the same as `contains`
 
-```json
+```js
 const product = {
   "product": {
     "title": "Gift Card",
@@ -120,7 +120,7 @@ matchJSONToSchema(product, schema) // true
 
 You can also match multiple items (they must all be contained)
 
-```json
+```js
 const product = {
   "product": {
     "title": "Gift Card",
@@ -139,7 +139,7 @@ matchJSONToSchema(product, schema) // true
 
 Or even nested objects
 
-```json
+```js
 const order = {
   "order": {
     "id": 123,
@@ -169,7 +169,7 @@ Sometimes you need more than simple a `equal` matching. Our syntax support diffe
 
 Operators can be used as an object instead of the matching primitive (value)
 
-```json
+```js
 const product = {
   "product": {
     "title": "A product",
