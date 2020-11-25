@@ -1,5 +1,5 @@
 {
-  "name": "json-match",
+  "name": "simple-json-match",
   "version": "1.0.0",
   "description": "Lightweight solution to evalute if JSON match desired input",
   "main": "lib/index.js",
