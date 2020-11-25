@@ -2,7 +2,7 @@
 
 `simple-json-match` is a lightweight, no depencies library to evaluate match a JSON document values with a simple syntax.
 
-It was designed to be used within [hookdeck.io] filtering engine and provides for a simple method for users to input their desired filter.
+It was designed to be used within [hookdeck.io](https://hookdeck.io) filtering engine and provides for a simple method for users to input their desired filter.
 
 This is not a full schema validation library like `json-schema` instead its goal is to provide a simple straitforward syntax to evalute match between values rather then type.
 
