@@ -67,7 +67,11 @@ const recursivelyMatchValue = (input: JSONType, schema: Schema): boolean => {
     );
     if (schema_ops.length > 0) {
       return schema_ops.some(([key, value]) => {
-        return !operators[key](input, value);
+        try {
+          return !operators[key](input, value);
+        } catch {
+          return true;
+        }
       });
     }
     return !input.some(

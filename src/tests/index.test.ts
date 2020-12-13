@@ -72,15 +72,15 @@ describe('matchJsonToSchema.test.ts', () => {
     [{ test: 'some-text' }, { test: { something: 'text' } }, false],
     [{ test: { more: true } }, { test: { $startsWith: 'text' } }, false],
     [
-      { test: 'some-text', tags: ['test', 'something'] },
-      { test: { $in: 'text' }, tags: { $in: 'test' } },
+      { test: 'some-text', id: 123 },
+      { test: { $in: 'text' }, id: { $in: [123, 456] } },
       true,
     ],
-    [
-      { test: 'some-text', tags: ['test', 'something'] },
-      { test: { $nin: 'some' }, tags: { $nin: 'test' } },
-      false,
-    ],
+    [{ id: 123 }, { id: { $in: [123, 456] } }, true],
+    [{ id: 123 }, { id: { $nin: [123, 456] } }, false],
+    [{ test: 'some-text' }, { test: { $in: 'text' } }, true],
+    [{ test: 'some-text' }, { test: { $nin: 'some' } }, false],
+    [{ tags: ['test', 'something'] }, { tags: { $nin: 'test' } }, false],
   ];
 
   tests.forEach(([input, schema, match], i) => {

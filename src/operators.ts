@@ -10,27 +10,22 @@ const operators: {
     return v == compare;
   },
   $neq: (v, compare) => {
-    v = isPrimitiveType(v) ? v : JSON.stringify(v);
-    compare = isPrimitiveType(compare) ? compare : JSON.stringify(compare);
-    return v != compare;
+    return !operators.$eq(v, compare);
   },
   $in: (v, compare) => {
     if (
-      !supportedType(v, ['array', 'string']) ||
-      !supportedType(compare, ['number', 'string', 'boolean'])
+      !supportedType(compare, ['array', 'string']) ||
+      !supportedType(v, ['number', 'string', 'boolean', 'null'])
     ) {
-      throw new Error('Unsupported types for $in operator');
+      throw new Error('Unsupported types for $in or $nin operator');
+    }
+    if (Array.isArray(compare)) {
+      return (compare as string | any[]).includes(v as any);
     }
     return (v as string | any[]).includes(compare as any);
   },
   $nin: (v, compare) => {
-    if (
-      !supportedType(v, ['array', 'string']) ||
-      !supportedType(compare, ['number', 'string', 'boolean', 'null'])
-    ) {
-      throw new Error('Unsupported types for $nin operator');
-    }
-    return !(v as string | any[]).includes(compare as any);
+    return !operators.$in(v, compare);
   },
   $startsWith: (v, compare) => {
     if (!supportedType(v, ['string']) || !supportedType(compare, ['string'])) {
