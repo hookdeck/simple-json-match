@@ -81,9 +81,33 @@ describe('matchJsonToSchema.test.ts', () => {
     [{ test: 'some-text' }, { test: { $in: 'text' } }, true],
     [{ test: 'some-text' }, { test: { $nin: 'some' } }, false],
     [{ tags: ['test', 'something'] }, { tags: { $nin: 'test' } }, false],
+    [{ test: true, test2: true }, { test2: { $ref: 'test' } }, true],
+    [{ test: true, test2: false }, { test2: { $ref: 'test' } }, false],
+    [{ test: 1, test2: 2 }, { test2: { $gt: { $ref: 'test' } } }, true],
+    [
+      { types: ['something', 'else'], test2: 'else' },
+      { types: { $ref: 'test2' } },
+      true,
+    ],
+    [
+      { types: ['something', 'else'], test2: 'else' },
+      { test2: { $ref: 'types[1]' } },
+      true,
+    ],
+    [
+      { current: { something: true }, another: { thing: true } },
+      { another: { thing: { $ref: 'current.something' } } },
+      true,
+    ],
+    [
+      { current: { something: true }, another: { thing: true } },
+      { another: { thing: { $ref: { bad: 'ref' } } } },
+      false,
+    ],
+    [{ test: 1 }, { test: { $gt: [1, 2, 3] } }, false],
   ];
 
-  tests.forEach(([input, schema, match], i) => {
+  tests.forEach(([input, schema, match]) => {
     it(`Correctly matches ${JSON.stringify(input)} with ${JSON.stringify(
       schema
     )}`, async () => {
