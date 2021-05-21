@@ -216,7 +216,7 @@ const example = {
   }
 };
 
-const ref1 = 'type' // examaple
+const ref1 = 'type' // example
 const ref2 = 'type.nested_object.hello' // world
 const ref3 = 'type.nested_object.array[1]' // 1
 ```
