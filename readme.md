@@ -202,6 +202,63 @@ matchJSONToSchema(product, schema); // true
 | $lt         | `string`,`number` | Less than                     |
 | $startsWith | `string`          | Starts with text              |
 | $endsWith   | `string`          | Ends with text                |
+| $or         | `array`           | Array of conditions to match  |
+| $ref        | &lt;field&gt;     | Reference a field             |
+
+### $or Operator
+
+The refrence `$or` is a special operator to evaluate match with an array of conditions. For the match to be true, only one of the condition needs to match. The array of condition can contain any other valid schema supported.
+
+```js
+const product = {
+  product: {
+    title: 'A product',
+    inventory: 5,
+  },
+};
+
+const schema = {
+  product: {
+    inventory: {
+      $or: [1, 5],
+    },
+  },
+};
+
+matchJSONToSchema(product, schema); // true
+```
+
+```js
+const exmaple = {
+  "hello": "world"
+}
+
+const schema = {
+  $or: [
+    {  "hello": "johny"}
+    {  "hello": "mark"},
+  ]
+}
+
+matchJSONToSchema(example, schema); // false
+```
+
+A reference can also be used in conjuction with other operators
+
+```js
+const product = {
+  inventory: 0,
+  old_inventory: 10,
+};
+
+const schema = {
+  inventory: {
+    $lte: { $ref: 'old_inventory' },
+  },
+};
+
+matchJSONToSchema(product, schema); // true
+```
 
 ### References
 

@@ -105,6 +105,20 @@ describe('matchJsonToSchema.test.ts', () => {
       false,
     ],
     [{ test: 1 }, { test: { $gt: [1, 2, 3] } }, false],
+    [{ test: true }, { $or: [{ test: true }] }, true],
+    [{ test: true }, { $or: [{ test: false }] }, false],
+    [
+      { test: { something: 'else' } },
+      { test: { $or: [{ something: true }, { something: { $in: 'else' } }] } },
+      true,
+    ],
+    [
+      { test: { something: 'else' } },
+      { test: { $or: [{ something: true }, { something: { $in: 'no' } }] } },
+      false,
+    ],
+    [1, { $or: [1, 2] }, true],
+    [1, { $or: [2, 3] }, false],
   ];
 
   tests.forEach(([input, schema, match]) => {

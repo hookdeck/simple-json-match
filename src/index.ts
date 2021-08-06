@@ -97,6 +97,11 @@ const recursivelyMatchValue = (
   }
 
   if (typeof schema === 'object') {
+    if (schema['$or'] && Array.isArray(schema['$or'])) {
+      return !schema['$or'].some((condition_schema) =>
+        matchJsonToSchema(input, condition_schema, root_input)
+      );
+    }
     if (schema['$ref']) {
       return recursivelyMatchValue(
         input,
@@ -150,6 +155,11 @@ const matchJsonToSchema = (
     }
 
     return !Object.entries(schema as SchemaObject).some(([key, schema]) => {
+      if (key === '$or' && Array.isArray(schema)) {
+        return !schema.some((condition_schema) =>
+          matchJsonToSchema(input, condition_schema, root_input)
+        );
+      }
       if (
         !Array.isArray(input) &&
         (input as { [k: string]: JSONType })[key] === undefined
