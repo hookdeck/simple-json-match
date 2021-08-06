@@ -241,23 +241,7 @@ const schema = {
 }
 
 matchJSONToSchema(example, schema); // false
-```
 
-A reference can also be used in conjuction with other operators
-
-```js
-const product = {
-  inventory: 0,
-  old_inventory: 10,
-};
-
-const schema = {
-  inventory: {
-    $lte: { $ref: 'old_inventory' },
-  },
-};
-
-matchJSONToSchema(product, schema); // true
 ```
 
 ### References
