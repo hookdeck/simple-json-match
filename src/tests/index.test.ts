@@ -56,6 +56,11 @@ describe('matchJsonToSchema.test.ts', () => {
       { tags: { $eq: ['test', 'other'] } },
       false,
     ],
+    [[1, 2, 3], 3, true],
+    [[1, 2, 3], 4, false],
+    [[1, 2, 3], [{ $eq: 3 }], true],
+    [[1, 2, 3], [{ $eq: 4 }], false],
+    [[1, 2, 3], { $eq: 3 }, false],
     [{ exist: true }, { exist: true }, true],
     [{ exist: true }, { exist: false }, false],
     [{ exist: null }, { exist: null }, true],
@@ -103,6 +108,80 @@ describe('matchJsonToSchema.test.ts', () => {
       { current: { something: true }, another: { thing: true } },
       { another: { thing: { $ref: { bad: 'ref' } } } },
       false,
+    ],
+    [
+      {
+        test: [
+          { a: 2, b: 1 },
+          { a: 2, b: 2 },
+        ],
+      },
+      {
+        test: {
+          a: {
+            $eq: { $ref: 'test[$index].b' },
+          },
+        },
+      },
+      true,
+    ],
+    [
+      {
+        test: [
+          { a: 2, b: 1 },
+          { a: 2, b: 2 },
+        ],
+      },
+      {
+        $or: [
+          {
+            test: {
+              a: {
+                $eq: { $ref: 'test[$index].b' },
+              },
+            },
+          },
+        ],
+      },
+      true,
+    ],
+    [
+      {
+        test: [{ a: [{ b: 3, c: 3 }] }, { a: [{ b: 2, c: 3 }] }],
+      },
+      {
+        test: {
+          a: {
+            b: { $ref: 'test[$index].a[$index].c' },
+          },
+        },
+      },
+      true,
+    ],
+    [
+      {
+        test: [{ a: [{ b: 3, c: 4 }] }, { a: [{ b: 2, c: 3 }] }],
+      },
+      {
+        test: {
+          a: {
+            b: { $ref: 'test[$index].a[$index].c' },
+          },
+        },
+      },
+      false,
+    ],
+    [
+      [
+        { a: 2, b: 1 },
+        { a: 2, b: 2 },
+      ],
+      {
+        a: {
+          $eq: { $ref: '[$index].b' },
+        },
+      },
+      true,
     ],
     [{ test: 1 }, { test: { $gt: [1, 2, 3] } }, false],
     [{ test: true }, { $or: [{ test: true }] }, true],

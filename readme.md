@@ -260,6 +260,7 @@ const example = {
 const ref1 = 'type' // example
 const ref2 = 'type.nested_object.hello' // world
 const ref3 = 'type.nested_object.array[1]' // 1
+const ref3 = 'type.nested_object.array[$index]' // 1,2 or 3 depending on the current index
 ```
 
 ```js
@@ -271,6 +272,27 @@ const product = {
 const schema = {
   updated_at: {
     $ref: 'created_at',
+  },
+};
+
+matchJSONToSchema(product, schema); // true
+```
+
+You can also reference the current array index instead of a specific index with `$index`. You can have multiple `$index` in your reference if you are dealing with nested arrays.
+
+```js
+const input = {
+  variants: [
+    { updated_at: '2020-05-20', created_at: '2020-04-20' },
+    { updated_at: '2020-04-20', created_at: '2020-04-20' },
+  ],
+};
+
+const schema = {
+  variants: {
+    updated_at: {
+      $ref: 'variants[$index].created_at',
+    },
   },
 };
 

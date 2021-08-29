@@ -41,19 +41,31 @@ export type Schema = JSONType | SchemaObject;
 
 const getReferenceValueInInput = (
   root_input: JSONType,
-  reference: string
+  reference: string,
+  indexes: number[]
 ): JSONType => {
   if (typeof reference !== 'string') {
     throw new Error('Invalid Reference');
   }
-  const results = query(root_input, reference, 1);
+  if (reference.includes('[$index]')) {
+    indexes.forEach((index) => {
+      reference = reference.replace('$index', `${index}`);
+    });
+  }
+  const results = query(
+    root_input,
+    reference.startsWith('[') ? `$${reference}` : reference,
+    1
+  );
+
   return results && results.length > 0 ? results[0] : null;
 };
 
 const recursivelyMatchValue = (
   input: JSONType,
   schema: Schema,
-  root_input: JSONType
+  root_input: JSONType,
+  indexes: number[]
 ): boolean => {
   if (isPrimitiveType(schema)) {
     if (isPrimitiveType(input)) {
@@ -61,7 +73,7 @@ const recursivelyMatchValue = (
     }
     if (Array.isArray(input)) {
       return !(input as JSONType[]).some(
-        (v) => !recursivelyMatchValue(v, schema, root_input)
+        (v, i) => !recursivelyMatchValue(v, schema, root_input, [...indexes, i])
       );
     }
     if (typeof input === 'object') {
@@ -74,8 +86,11 @@ const recursivelyMatchValue = (
       return schema.some(
         (sub_schema) =>
           !input.some(
-            (array_input) =>
-              !recursivelyMatchValue(array_input, sub_schema, root_input)
+            (array_input, i) =>
+              !recursivelyMatchValue(array_input, sub_schema, root_input, [
+                ...indexes,
+                i,
+              ])
           )
       );
     }
@@ -91,22 +106,23 @@ const recursivelyMatchValue = (
         }
       });
     }
-    return !input.some(
-      (array_input) => !recursivelyMatchValue(array_input, schema, root_input)
+    return !(input as JSONType[]).some(
+      (v, i) => !recursivelyMatchValue(v, schema, root_input, [...indexes, i])
     );
   }
 
   if (typeof schema === 'object') {
     if (schema['$or'] && Array.isArray(schema['$or'])) {
       return !schema['$or'].some((condition_schema) =>
-        matchJsonToSchema(input, condition_schema, root_input)
+        matchJsonToSchema(input, condition_schema, root_input, indexes)
       );
     }
     if (schema['$ref']) {
       return recursivelyMatchValue(
         input,
-        getReferenceValueInInput(root_input, schema['$ref']),
-        root_input
+        getReferenceValueInInput(root_input, schema['$ref'], indexes),
+        root_input,
+        indexes
       );
     }
     const schema_ops = Object.entries(schema).filter(([key]) =>
@@ -115,7 +131,7 @@ const recursivelyMatchValue = (
     if (schema_ops.length > 0) {
       return schema_ops.some(([key, value]) => {
         if (typeof value === 'object' && value && value['$ref']) {
-          value = getReferenceValueInInput(root_input, value['$ref']);
+          value = getReferenceValueInInput(root_input, value['$ref'], indexes);
         }
         try {
           return !operators[key](input, value);
@@ -127,7 +143,7 @@ const recursivelyMatchValue = (
     if (isPrimitiveType(input)) {
       return true;
     }
-    return !matchJsonToSchema(input, schema, root_input);
+    return !matchJsonToSchema(input, schema, root_input, indexes);
   }
 
   return true;
@@ -136,39 +152,36 @@ const recursivelyMatchValue = (
 const matchJsonToSchema = (
   input: JSONType,
   schema: Schema,
-  root_input?: JSONType
+  root_input?: JSONType,
+  indexes: number[] = []
 ): boolean => {
   try {
     if (!root_input) {
       root_input = input;
     }
-    if (isPrimitiveType(input)) {
-      return !recursivelyMatchValue(input, schema, input);
+    if (isPrimitiveType(input) || Array.isArray(input)) {
+      return !recursivelyMatchValue(input, schema, input, indexes);
     }
 
-    if (isPrimitiveType(schema)) {
-      return false;
+    if (typeof schema === 'object') {
+      return !Object.entries(schema as SchemaObject).some(([key, schema]) => {
+        if (key === '$or' && Array.isArray(schema)) {
+          return !schema.some((condition_schema) =>
+            matchJsonToSchema(input, condition_schema, root_input, indexes)
+          );
+        }
+        if (
+          !Array.isArray(input) &&
+          (input as { [k: string]: JSONType })[key] === undefined
+        ) {
+          return true;
+        }
+        return recursivelyMatchValue(input[key], schema, root_input, indexes);
+      });
     }
 
-    if (Array.isArray(schema)) {
-      return !recursivelyMatchValue(input, schema, input);
-    }
-
-    return !Object.entries(schema as SchemaObject).some(([key, schema]) => {
-      if (key === '$or' && Array.isArray(schema)) {
-        return !schema.some((condition_schema) =>
-          matchJsonToSchema(input, condition_schema, root_input)
-        );
-      }
-      if (
-        !Array.isArray(input) &&
-        (input as { [k: string]: JSONType })[key] === undefined
-      ) {
-        return true;
-      }
-      return recursivelyMatchValue(input[key], schema, root_input);
-    });
-  } catch {
+    return !recursivelyMatchValue(input, schema, input, indexes);
+  } catch (e) {
     return false;
   }
 };
