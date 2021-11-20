@@ -170,6 +170,12 @@ const matchJsonToSchema = (
             matchJsonToSchema(input, condition_schema, root_input, indexes)
           );
         }
+        if (key === '$and' && Array.isArray(schema)) {
+          return schema.some(
+            (condition_schema) =>
+              !matchJsonToSchema(input, condition_schema, root_input, indexes)
+          );
+        }
         if (
           !Array.isArray(input) &&
           (input as { [k: string]: JSONType })[key] === undefined

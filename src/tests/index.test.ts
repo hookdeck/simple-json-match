@@ -184,6 +184,7 @@ describe('matchJsonToSchema.test.ts', () => {
       true,
     ],
     [{ test: 1 }, { test: { $gt: [1, 2, 3] } }, false],
+
     [{ test: true }, { $or: [{ test: true }] }, true],
     [{ test: true }, { $or: [{ test: false }] }, false],
     [
@@ -198,6 +199,54 @@ describe('matchJsonToSchema.test.ts', () => {
     ],
     [1, { $or: [1, 2] }, true],
     [1, { $or: [2, 3] }, false],
+    [{ test: true }, { $and: [{ test: true }] }, true],
+    [{ test: true }, { $or: [{ test: false }] }, false],
+    [
+      { test: { something: 'else' } },
+      {
+        test: {
+          $and: [{ something: { $neq: null } }, { something: { $in: 'else' } }],
+        },
+      },
+      true,
+    ],
+    [
+      { test: { something: null } },
+      {
+        test: {
+          $and: [{ something: { $neq: null } }, { something: { $in: 'else' } }],
+        },
+      },
+      false,
+    ],
+    [1, { $and: [1, 2] }, false],
+    [
+      {
+        current: {
+          a: 'a',
+        },
+        previous: {
+          a: 'test',
+        },
+      },
+      {
+        current: {
+          $and: [
+            {
+              a: {
+                $neq: null,
+              },
+            },
+            {
+              a: {
+                $neq: { $ref: 'previous.a' },
+              },
+            },
+          ],
+        },
+      },
+      true,
+    ],
   ];
 
   tests.forEach(([input, schema, match]) => {

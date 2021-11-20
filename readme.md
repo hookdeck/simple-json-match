@@ -203,11 +203,12 @@ matchJSONToSchema(product, schema); // true
 | $startsWith | `string`          | Starts with text              |
 | $endsWith   | `string`          | Ends with text                |
 | $or         | `array`           | Array of conditions to match  |
+| $and        | `array`           | Array of conditions to match  |
 | $ref        | &lt;field&gt;     | Reference a field             |
 
-### $or Operator
+### $or / $and Operator
 
-The refrence `$or` is a special operator to evaluate match with an array of conditions. For the match to be true, only one of the condition needs to match. The array of condition can contain any other valid schema supported.
+The reference `$or` and `$and` are special operator to evaluate match with an array of conditions. For the match to be true, only one of the condition needs to match. The array of condition can contain any other valid schema supported.
 
 ```js
 const product = {
