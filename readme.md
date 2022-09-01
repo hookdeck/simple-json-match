@@ -1,5 +1,9 @@
 # simple-json-match
 
+[slack-badge]: https://img.shields.io/badge/Slack-Hookdeck%20Developers-blue?logo=slack
+
+[![slack-badge]](https://join.slack.com/t/hookdeckdevelopers/shared_invite/zt-yw7hlyzp-EQuO3QvdiBlH9Tz2KZg5MQ)
+
 `simple-json-match` library to evaluate match a JSON document values with a simple syntax.
 
 It was designed to be used within [hookdeck.com](https://hookdeck.com) filtering engine and provides for a simple method for users to input their desired filter.
