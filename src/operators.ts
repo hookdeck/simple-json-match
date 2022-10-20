@@ -2,7 +2,7 @@ import { Operator } from '.';
 import { isPrimitiveType, supportedType } from './utils';
 
 const operators: {
-  [k in Operator]: (v, compare) => boolean;
+  [k in Operator]: (v, compare, operator?) => boolean;
 } = {
   $eq: (v, compare) => {
     v = isPrimitiveType(v) ? v : JSON.stringify(v);

@@ -156,6 +156,21 @@ const matchJsonToSchema = (
   indexes: number[] = []
 ): boolean => {
   try {
+    if (typeof schema === 'object' && schema['$not']) {
+      const result = matchJsonToSchema(
+        input,
+        schema['$not'],
+        root_input,
+        indexes
+      );
+
+      delete schema['$not'];
+
+      if (Object.keys(schema).length === 0 || result) {
+        return !result;
+      }
+    }
+
     if (!root_input) {
       root_input = input;
     }

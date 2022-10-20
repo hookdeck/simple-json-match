@@ -255,5 +255,25 @@ describe('matchJsonToSchema.test.ts', () => {
     )}`, async () => {
       expect(matchJsonToSchema(input as any, schema as any)).toBe(match);
     });
+
+    it(`Correctly matches ${JSON.stringify(input)} with ${JSON.stringify({
+      $not: schema,
+    })}`, async () => {
+      expect(matchJsonToSchema(input as any, { $not: schema } as any)).toBe(
+        !match
+      );
+    });
+  });
+
+  it(`Correctly matches`, async () => {
+    expect(
+      matchJsonToSchema(
+        { type: 'test' },
+        {
+          $not: { type: { $or: ['cre', 'test'] } },
+          type: 'test',
+        }
+      )
+    ).toBe(false);
   });
 });
