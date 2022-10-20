@@ -247,6 +247,10 @@ describe('matchJsonToSchema.test.ts', () => {
       },
       true,
     ],
+    [{ test: 'else' }, { test: { $exist: true } }, true],
+    [{ test: 'else' }, { test: { $exist: false } }, false],
+    [{ test1: 'else' }, { test: { $exist: true } }, false],
+    [{ test1: 'else' }, { test: { $exist: false } }, true],
   ];
 
   tests.forEach(([input, schema, match]) => {
@@ -263,17 +267,5 @@ describe('matchJsonToSchema.test.ts', () => {
         !match
       );
     });
-  });
-
-  it(`Correctly matches`, async () => {
-    expect(
-      matchJsonToSchema(
-        { type: 'test' },
-        {
-          $not: { type: { $or: ['cre', 'test'] } },
-          type: 'test',
-        }
-      )
-    ).toBe(false);
   });
 });

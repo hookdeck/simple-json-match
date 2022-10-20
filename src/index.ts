@@ -12,7 +12,8 @@ export type Operator =
   | '$startsWith'
   | '$endsWith'
   | '$in'
-  | '$nin';
+  | '$nin'
+  | '$exist';
 
 export type JSONTypeKey =
   | 'null'
@@ -195,8 +196,12 @@ const matchJsonToSchema = (
           !Array.isArray(input) &&
           (input as { [k: string]: JSONType })[key] === undefined
         ) {
+          if (typeof schema === 'object' && schema['$exist'] === false) {
+            return false;
+          }
           return true;
         }
+
         return recursivelyMatchValue(input[key], schema, root_input, indexes);
       });
     }
