@@ -251,6 +251,10 @@ describe('matchJsonToSchema.test.ts', () => {
     [{ test: 'else' }, { test: { $exist: false } }, false],
     [{ test1: 'else' }, { test: { $exist: true } }, false],
     [{ test1: 'else' }, { test: { $exist: false } }, true],
+    ['/test', '/test', true],
+    ['/test', '/test2', false],
+    [1, 1, true],
+    [1, 2, false],
   ];
 
   tests.forEach(([input, schema, match]) => {
