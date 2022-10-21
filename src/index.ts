@@ -21,7 +21,8 @@ export type JSONTypeKey =
   | 'number'
   | 'boolean'
   | 'object'
-  | 'array';
+  | 'array'
+  | 'undefined';
 
 export type Primitive = number | null | string | boolean;
 export type JSONType =
@@ -186,20 +187,25 @@ const matchJsonToSchema = (
             matchJsonToSchema(input, condition_schema, root_input, indexes)
           );
         }
+
         if (key === '$and' && Array.isArray(schema)) {
           return schema.some(
             (condition_schema) =>
               !matchJsonToSchema(input, condition_schema, root_input, indexes)
           );
         }
+
         if (
           !Array.isArray(input) &&
           (input as { [k: string]: JSONType })[key] === undefined
         ) {
+          let result = true;
           if (typeof schema === 'object' && schema['$exist'] === false) {
-            return false;
+            result = false;
           }
-          return true;
+          if (result) {
+            return true;
+          }
         }
 
         return recursivelyMatchValue(input[key], schema, root_input, indexes);

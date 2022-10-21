@@ -77,15 +77,15 @@ const operators: {
   },
   $exist: (v, compare) => {
     if (
-      !supportedType(v, ['number', 'string', 'boolean', 'null']) ||
+      !supportedType(v, ['number', 'string', 'boolean', 'null', 'undefined']) ||
       !supportedType(compare, ['boolean'])
     ) {
       throw new Error('Unsupported types for $exist operator');
     }
-    if (compare && v !== undefined) {
+    if (compare === true && v !== undefined) {
       return true;
     }
-    if (!compare && v === undefined) {
+    if (compare === false && v === undefined) {
       return true;
     }
     return false;
