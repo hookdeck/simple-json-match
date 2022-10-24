@@ -327,32 +327,30 @@ matchJSONToSchema(product, schema); // true
 
 `$exist` requires a field to be undefined when false and array, number, object, string, boolean or null when true.
 
-```json
-// Event request body
-{
-  "inventory": 0,
-}
-// Filter
-{
-    "old_inventory": {
-      "$exist": false
-    }
-}
+```js
+const product = {
+  inventory: 0,
+};
+
+const schema = {
+  old_inventory: {
+    $exist: false,
+  },
+};
 ```
 
 ### Negation operator
 
 `$not` negation of the schema.
 
-```json
-// Event request body
-{
-  "inventory": 0,
-}
-// Filter
-{
-    "$not": {
-      "inventory": 1,
-    }
-}
+```js
+const product = {
+  inventory: 0,
+};
+
+const schema = {
+  $not: {
+    inventory: 1,
+  },
+};
 ```

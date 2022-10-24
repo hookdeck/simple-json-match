@@ -272,6 +272,11 @@ describe('matchJsonToSchema.test.ts', () => {
       true,
     ],
     [
+      { test: { test1: 'else' } },
+      { test: { test1: { $exist: true, $in: 'no' } } },
+      false,
+    ],
+    [
       { test: { test1: 'else', test2: 'not' } },
       {
         test: {
