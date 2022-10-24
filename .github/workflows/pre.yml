@@ -1,0 +1,22 @@
+name: Tests and lint
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: yarn install
+      - name: Run lint
+        run: yarn lint
+      - name: Run tests
+        run: yarn lint
