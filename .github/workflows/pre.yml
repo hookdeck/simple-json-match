@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  lint and tests:
+  lint_and_tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
