@@ -2,7 +2,7 @@ import { Operator } from '.';
 import { isPrimitiveType, supportedType } from './utils';
 
 const operators: {
-  [k in Operator]: (v, compare, operator?) => boolean;
+  [k in Operator]: (v, compare) => boolean;
 } = {
   $eq: (v, compare) => {
     v = isPrimitiveType(v) ? v : JSON.stringify(v);
@@ -76,11 +76,8 @@ const operators: {
     return v < compare;
   },
   $exist: (v, compare) => {
-    if (
-      !supportedType(v, ['number', 'string', 'boolean', 'null', 'undefined']) ||
-      !supportedType(compare, ['boolean'])
-    ) {
-      throw new Error('Unsupported types for $exist operator');
+    if (!supportedType(compare, ['boolean'])) {
+      throw new Error('Unsupported type for $exist operator');
     }
     if (compare === true && v !== undefined) {
       return true;
