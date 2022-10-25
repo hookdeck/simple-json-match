@@ -247,12 +247,398 @@ describe('matchJsonToSchema.test.ts', () => {
       },
       true,
     ],
+    [{ test: 'else' }, { test: { $exist: true } }, true],
+    [{ test: 'else' }, { test: { $exist: false } }, false],
+    [{ test1: 'else' }, { test: { $exist: true } }, false],
+    [{ test1: 'else' }, { test: { $exist: false } }, true],
+    ['/test', '/test', true],
+    ['/test', '/test2', false],
+    [1, 1, true],
+    [1, 2, false],
+    [1, {}, false],
+    [
+      { test: { test1: 'else' } },
+      { test: { test1: { $exist: true, $or: ['else', 'not'] } } },
+      true,
+    ],
+    [
+      { test: { test1: 'else1' } },
+      { test: { test1: { $exist: true, $or: ['else', 'not'] } } },
+      false,
+    ],
+    [
+      { test: { test1: 'else' } },
+      { test: { test1: { $exist: true, $in: 'el' } } },
+      true,
+    ],
+    [
+      { test: { test1: 'else' } },
+      { test: { test1: { $exist: true, $in: 'no' } } },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        test: {
+          test1: { $exist: true, $or: ['else', 'not'] },
+          $and: [{ test1: 'else' }, { test2: 'not' }],
+        },
+      },
+      true,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        test: {
+          test1: { $exist: true, $or: ['else1', 'not1'] },
+          $and: [{ test1: 'else1' }, { test2: 'not1' }],
+        },
+      },
+      false,
+    ],
+    [
+      { test: { test1: { test2: 'else' } } },
+      { test: { test1: { test2: { $exist: true } } } },
+      true,
+    ],
+    [
+      { test: { test1: { test2: 'else' } } },
+      { test: { test1: { test2: { $exist: false } } } },
+      false,
+    ],
+    [
+      { test: { test1: { test3: 'else' } } },
+      { test: { test1: { test2: { $exist: false } } } },
+      true,
+    ],
+    [
+      { test: { test1: { test3: 'else' } } },
+      { test: { test1: { test2: { $exist: true } } } },
+      false,
+    ],
+    [
+      { test: { test1: 'else' } },
+      {
+        $or: [
+          { test: { test1: { $exist: true } } },
+          { test: { test1: 'else1' } },
+        ],
+      },
+      true,
+    ],
+    [
+      { test: { test1: 'else' } },
+      {
+        $or: [
+          { test: { test1: { $exist: false } } },
+          { test: { test1: 'else' } },
+        ],
+      },
+      true,
+    ],
+    [
+      { test: { test2: 'else' } },
+      {
+        $or: [
+          { test: { test1: { $exist: true } } },
+          { test: { test2: 'else' } },
+        ],
+      },
+      true,
+    ],
+    [
+      { test: { test2: 'else' } },
+      {
+        $or: [
+          { test: { test1: { $exist: true } } },
+          { test: { test2: 'else1' } },
+        ],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $or: [
+          { test: { test1: { $exist: true } } },
+          { test: { test2: 'else1' } },
+        ],
+      },
+      true,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $and: [
+          { test: { test1: { $exist: true } } },
+          { test: { test2: 'not' } },
+        ],
+      },
+      true,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $and: [
+          { test: { test1: { $exist: true } } },
+          { test: { test2: 'not1' } },
+        ],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $and: [
+          { test: { test1: { $exist: true } } },
+          { test: { test1: 'else' } },
+        ],
+      },
+      true,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $and: [
+          { test: { test1: { $exist: true } } },
+          { test: { test1: 'else1' } },
+        ],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $and: [{ test: { test1: { $exist: true, $eq: 'else' } } }],
+      },
+      true,
+    ],
+    [
+      { test: { test2: 'not' } },
+      {
+        $and: [{ test: { test1: { $exist: true, $eq: 'not' } } }],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $and: [
+          { test: { test1: { $exist: true } } },
+          { test: { test2: { $exist: true } } },
+        ],
+      },
+      true,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $and: [
+          { test: { test1: { $exist: true } } },
+          { test: { test2: { $exist: false } } },
+        ],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else' } },
+      {
+        $and: [
+          { test: { test1: { $exist: true } } },
+          { test: { test2: { $exist: false } } },
+        ],
+      },
+      true,
+    ],
+    [
+      { test: { test1: 'else' } },
+      {
+        $or: [
+          { test: { test1: { $exist: true } } },
+          { test: { test2: { $exist: false } } },
+        ],
+      },
+      true,
+    ],
+    [
+      { test: { test3: 'else' } },
+      {
+        $or: [
+          { test: { test1: { $exist: true } } },
+          { test: { test2: { $exist: false } } },
+        ],
+      },
+      true,
+    ],
+  ];
+
+  const not_tests = [
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: 'else2' },
+        },
+        $and: [{ test: { test1: 'else' } }, { test: { test2: 'not' } }],
+      },
+      true,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: 'else' },
+        },
+        $and: [{ test: { test1: 'else' } }, { test: { test2: 'not' } }],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: { $exist: true } },
+        },
+        $and: [{ test: { test1: 'else' } }, { test: { test2: 'not' } }],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: { $exist: false } },
+        },
+        $and: [{ test: { test1: 'else' } }, { test: { test2: 'not' } }],
+      },
+      true,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: { $exist: false } },
+        },
+        $and: [
+          { test: { test3: { $exist: false } } },
+          { test: { test2: 'not' } },
+        ],
+      },
+      true,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: { $exist: false } },
+        },
+        $and: [
+          { test: { test3: { $exist: true } } },
+          { test: { test2: 'not' } },
+        ],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: 'else2' },
+        },
+        $or: [
+          { test: { test3: { $exist: true } } },
+          { test: { test2: 'not' } },
+        ],
+      },
+      true,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: 'else' },
+        },
+        $or: [
+          { test: { test3: { $exist: true } } },
+          { test: { test2: 'not' } },
+        ],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: 'else' },
+        },
+        $or: [
+          { test: { test3: { $exist: false } } },
+          { test: { test2: 'not' } },
+        ],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: 'else' },
+        },
+        $or: [
+          { test: { test3: { $exist: false } } },
+          { test: { test2: 'not2' } },
+        ],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: 'else2' },
+        },
+        $or: [
+          { test: { test3: { $exist: true } } },
+          { test: { test2: 'not2' } },
+        ],
+      },
+      false,
+    ],
+    [
+      { test: { test1: 'else', test2: 'not' } },
+      {
+        $not: {
+          test: { test1: 'else2' },
+        },
+        $or: [
+          { test: { test3: { $exist: false } } },
+          { test: { test2: 'not' } },
+        ],
+      },
+      true,
+    ],
   ];
 
   tests.forEach(([input, schema, match]) => {
     it(`Correctly matches ${JSON.stringify(input)} with ${JSON.stringify(
       schema
-    )}`, async () => {
+    )} expect ${match}`, async () => {
+      expect(matchJsonToSchema(input as any, schema as any)).toBe(match);
+    });
+
+    it(`Correctly matches ${JSON.stringify(input)} with ${JSON.stringify({
+      $not: schema,
+    })} expect ${!match}`, async () => {
+      expect(matchJsonToSchema(input as any, { $not: schema } as any)).toBe(
+        !match
+      );
+    });
+  });
+
+  not_tests.forEach(([input, schema, match]) => {
+    it(`Correctly matches ${JSON.stringify(input)} with ${JSON.stringify(
+      schema
+    )} expect ${match}`, async () => {
       expect(matchJsonToSchema(input as any, schema as any)).toBe(match);
     });
   });

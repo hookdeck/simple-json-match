@@ -12,7 +12,8 @@ export type Operator =
   | '$startsWith'
   | '$endsWith'
   | '$in'
-  | '$nin';
+  | '$nin'
+  | '$exist';
 
 export type JSONTypeKey =
   | 'null'
@@ -20,7 +21,8 @@ export type JSONTypeKey =
   | 'number'
   | 'boolean'
   | 'object'
-  | 'array';
+  | 'array'
+  | 'undefined';
 
 export type Primitive = number | null | string | boolean;
 export type JSONType =
@@ -156,6 +158,21 @@ const matchJsonToSchema = (
   indexes: number[] = []
 ): boolean => {
   try {
+    if (typeof schema === 'object' && schema['$not']) {
+      const result = matchJsonToSchema(
+        input,
+        schema['$not'],
+        root_input,
+        indexes
+      );
+
+      delete schema['$not'];
+
+      if (Object.keys(schema).length === 0 || result) {
+        return !result;
+      }
+    }
+
     if (!root_input) {
       root_input = input;
     }
@@ -170,18 +187,27 @@ const matchJsonToSchema = (
             matchJsonToSchema(input, condition_schema, root_input, indexes)
           );
         }
+
         if (key === '$and' && Array.isArray(schema)) {
           return schema.some(
             (condition_schema) =>
               !matchJsonToSchema(input, condition_schema, root_input, indexes)
           );
         }
+
         if (
           !Array.isArray(input) &&
           (input as { [k: string]: JSONType })[key] === undefined
         ) {
-          return true;
+          let result = true;
+          if (typeof schema === 'object' && schema['$exist'] === false) {
+            result = false;
+          }
+          if (result) {
+            return true;
+          }
         }
+
         return recursivelyMatchValue(input[key], schema, root_input, indexes);
       });
     }

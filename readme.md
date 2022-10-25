@@ -209,6 +209,8 @@ matchJSONToSchema(product, schema); // true
 | $or         | `array`           | Array of conditions to match  |
 | $and        | `array`           | Array of conditions to match  |
 | $ref        | &lt;field&gt;     | Reference a field             |
+| $exist      | boolean           | Undefined or not undefined    |
+| $not        | Valid syntax      | Negation                      |
 
 ### $or / $and Operator
 
@@ -319,4 +321,36 @@ const schema = {
 };
 
 matchJSONToSchema(product, schema); // true
+```
+
+### $exist operator
+
+`$exist` requires a field to be undefined when false and array, number, object, string, boolean or null when true.
+
+```js
+const product = {
+  inventory: 0,
+};
+
+const schema = {
+  old_inventory: {
+    $exist: false,
+  },
+};
+```
+
+### Negation operator
+
+`$not` negation of the schema.
+
+```js
+const product = {
+  inventory: 0,
+};
+
+const schema = {
+  $not: {
+    inventory: 1,
+  },
+};
 ```

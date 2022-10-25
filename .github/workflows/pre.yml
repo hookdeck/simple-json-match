@@ -1,0 +1,21 @@
+name: Lint and tests
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint_and_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run linter
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test

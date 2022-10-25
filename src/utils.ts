@@ -1,6 +1,9 @@
 import { JSONType, JSONTypeKey } from '.';
 
 export const getJSONType = (v: JSONType): JSONTypeKey => {
+  if (v === undefined) {
+    return 'undefined';
+  }
   if (v === null) {
     return 'null';
   }

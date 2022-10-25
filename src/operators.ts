@@ -75,6 +75,18 @@ const operators: {
     }
     return v < compare;
   },
+  $exist: (v, compare) => {
+    if (!supportedType(compare, ['boolean'])) {
+      throw new Error('Unsupported type for $exist operator');
+    }
+    if (compare === true && v !== undefined) {
+      return true;
+    }
+    if (compare === false && v === undefined) {
+      return true;
+    }
+    return false;
+  },
 };
 
 export const operator_keys = Object.keys(operators);
