@@ -14,12 +14,18 @@ const operators: {
   },
   $in: (v, compare) => {
     if (
-      !supportedType(compare, ['array', 'string']) ||
-      !supportedType(v, ['number', 'string', 'boolean', 'null'])
+      !supportedType(compare, ['array', 'string', 'number']) ||
+      !supportedType(v, ['number', 'string', 'boolean', 'null', 'array'])
     ) {
       throw new Error('Unsupported types for $in or $nin operator');
     }
     if (Array.isArray(compare)) {
+      if (compare.some((c) => !supportedType(c, ['number', 'string']))) {
+        throw new Error('Unsupported types for $in or $nin operator');
+      }
+      if (Array.isArray(v)) {
+        return compare.some((c) => v.includes(c));
+      }
       return (compare as string | any[]).includes(v as any);
     }
     return (v as string | any[]).includes(compare as any);

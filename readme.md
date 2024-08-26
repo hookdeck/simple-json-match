@@ -194,23 +194,23 @@ matchJSONToSchema(product, schema); // true
 
 #### All operators
 
-| Operator    | Supported Type    | Description                   |
-| ----------- | ----------------- | ----------------------------- |
-| $eq         | `any`             | Equal (or deep equal)         |
-| $neq        | `any`             | Not Equal (or deep not equal) |
-| $in         | `string`,`array`  | Contains                      |
-| $nin        | `string`,`array`  | Does not contain              |
-| $gte        | `string`,`number` | Greater than or equal to      |
-| $gt         | `string`,`number` | Greater than                  |
-| $lte        | `string`,`number` | Less than or equal to         |
-| $lt         | `string`,`number` | Less than                     |
-| $startsWith | `string`          | Starts with text              |
-| $endsWith   | `string`          | Ends with text                |
-| $or         | `array`           | Array of conditions to match  |
-| $and        | `array`           | Array of conditions to match  |
-| $ref        | &lt;field&gt;     | Reference a field             |
-| $exist      | boolean           | Undefined or not undefined    |
-| $not        | Valid syntax      | Negation                      |
+| Operator    | Supported Type                           | Description                   |
+| ----------- | ---------------------------------------- | ----------------------------- |
+| $eq         | `any`                                    | Equal (or deep equal)         |
+| $neq        | `any`                                    | Not Equal (or deep not equal) |
+| $in         | `string`,`number`,`string[]`, `number[]` | Contains                      |
+| $nin        | `string`,`number`,`string[]`, `number[]` | Does not contain              |
+| $gte        | `string`,`number`                        | Greater than or equal to      |
+| $gt         | `string`,`number`                        | Greater than                  |
+| $lte        | `string`,`number`                        | Less than or equal to         |
+| $lt         | `string`,`number`                        | Less than                     |
+| $startsWith | `string`                                 | Starts with text              |
+| $endsWith   | `string`                                 | Ends with text                |
+| $or         | `array`                                  | Array of conditions to match  |
+| $and        | `array`                                  | Array of conditions to match  |
+| $ref        | &lt;field&gt;                            | Reference a field             |
+| $exist      | boolean                                  | Undefined or not undefined    |
+| $not        | Valid syntax                             | Negation                      |
 
 ### $or / $and Operator
 
