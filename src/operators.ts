@@ -15,7 +15,7 @@ const operators: {
   $in: (v, compare) => {
     if (
       !supportedType(compare, ['array', 'string', 'number']) ||
-      !supportedType(v, ['number', 'string', 'boolean', 'null', 'array'])
+      !supportedType(v, ['number', 'string', 'boolean', 'null'])
     ) {
       throw new Error('Unsupported types for $in or $nin operator');
     }
@@ -23,10 +23,7 @@ const operators: {
       if (compare.some((c) => !supportedType(c, ['number', 'string']))) {
         throw new Error('Unsupported types for $in or $nin operator');
       }
-      if (Array.isArray(v)) {
-        return compare.some((c) => v.includes(c));
-      }
-      return (compare as string | any[]).includes(v as any);
+      return (compare as (string | number)[]).includes(v as any);
     }
     return (v as string | any[]).includes(compare as any);
   },
@@ -34,14 +31,32 @@ const operators: {
     return !operators.$in(v, compare);
   },
   $startsWith: (v, compare) => {
-    if (!supportedType(v, ['string']) || !supportedType(compare, ['string'])) {
+    if (
+      !supportedType(v, ['string']) ||
+      !supportedType(compare, ['string', 'array'])
+    ) {
       throw new Error('Unsupported types for $startsWith operator');
+    }
+    if (Array.isArray(compare)) {
+      if (compare.some((c) => !supportedType(c, ['string']))) {
+        throw new Error('Unsupported types for $startsWith operator');
+      }
+      return (compare as string[]).some((c) => v.startsWith(c as string));
     }
     return (v as string).startsWith(compare as string);
   },
   $endsWith: (v, compare) => {
-    if (!supportedType(v, ['string']) || !supportedType(compare, ['string'])) {
+    if (
+      !supportedType(v, ['string']) ||
+      !supportedType(compare, ['string', 'array'])
+    ) {
       throw new Error('Unsupported types for $endsWith operator');
+    }
+    if (Array.isArray(compare)) {
+      if (compare.some((c) => !supportedType(c, ['string']))) {
+        throw new Error('Unsupported types for $endsWith operator');
+      }
+      return (compare as string[]).some((c) => v.endsWith(c as string));
     }
     return (v as string).endsWith(compare as string);
   },

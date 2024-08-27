@@ -77,6 +77,9 @@ describe('matchJsonToSchema.test.ts', () => {
     [{ test: 'some-text' }, { test: { $endsWith: 'text' } }, true],
     [{ test: 'some-text' }, { test: { something: 'text' } }, false],
     [{ test: { more: true } }, { test: { $startsWith: 'text' } }, false],
+    [{ test: 'some-text' }, { test: { $startsWith: ['some', 'else'] } }, true],
+    [{ test: 'some-text' }, { test: { $endsWith: ['some', 'else'] } }, false],
+    [{ test: 'some-text' }, { test: { $endsWith: ['text', 'else'] } }, true],
     [
       { test: 'some-text', id: 123 },
       { test: { $in: 'text' }, id: { $in: [123, 456] } },
@@ -90,26 +93,6 @@ describe('matchJsonToSchema.test.ts', () => {
     [
       { test: 'some-text', id: 123 },
       { test: { $in: ['some', 'text'] }, id: { $nin: [123, 456] } },
-      false,
-    ],
-    [
-      { test: ['some-text', 'yet-another-text'], id: [123] },
-      { test: { $in: ['some-text', 'other-text'] }, id: { $in: [123, 456] } },
-      true,
-    ],
-    [
-      { test: ['some-text', 'yet-another-text'], id: [789] },
-      { test: { $in: ['some', 'text'] }, id: { $in: [123, 456] } },
-      false,
-    ],
-    [
-      { test: ['some-text', 'yet-another-text'], id: [123, 456] },
-      { test: { $in: 'some-text' }, id: { $in: 123 } },
-      true,
-    ],
-    [
-      { test: ['some-text', 'yet-another-text'], id: [456, 789] },
-      { test: { $in: ['some', 'text'] }, id: { $in: 123 } },
       false,
     ],
     [{ test: 'some-text' }, { test: { $in: 'text' } }, true],
