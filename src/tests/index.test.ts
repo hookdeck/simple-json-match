@@ -78,6 +78,11 @@ describe('matchJsonToSchema.test.ts', () => {
     [{ test: 'some-text' }, { test: { something: 'text' } }, false],
     [{ test: { more: true } }, { test: { $startsWith: 'text' } }, false],
     [{ test: 'some-text' }, { test: { $startsWith: ['some', 'else'] } }, true],
+    [
+      { test: 'some-text' },
+      { test: { $startsWith: ['something', 'else'] } },
+      false,
+    ],
     [{ test: 'some-text' }, { test: { $endsWith: ['some', 'else'] } }, false],
     [{ test: 'some-text' }, { test: { $endsWith: ['text', 'else'] } }, true],
     [
