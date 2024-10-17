@@ -636,11 +636,32 @@ describe('matchJsonToSchema.test.ts', () => {
     ],
   ];
 
+  const deepFreeze = (obj: any): any => {
+    const object_keys = Object.keys(obj);
+
+    for (const key of object_keys) {
+      const property_value = obj[key];
+
+      if (
+        typeof property_value === 'object' &&
+        property_value !== null &&
+        !Object.isFrozen(property_value)
+      ) {
+        deepFreeze(property_value);
+      }
+    }
+
+    return Object.freeze(obj);
+  };
+
   tests.forEach(([input, schema, match]) => {
     it(`Correctly matches ${JSON.stringify(input)} with ${JSON.stringify(
       schema
     )} expect ${match}`, async () => {
       expect(matchJsonToSchema(input as any, schema as any)).toBe(match);
+      expect(
+        matchJsonToSchema(deepFreeze(input as any), deepFreeze(schema as any))
+      ).toBe(match);
     });
 
     it(`Correctly matches ${JSON.stringify(input)} with ${JSON.stringify({
@@ -649,6 +670,12 @@ describe('matchJsonToSchema.test.ts', () => {
       expect(matchJsonToSchema(input as any, { $not: schema } as any)).toBe(
         !match
       );
+      expect(
+        matchJsonToSchema(
+          deepFreeze(input as any),
+          deepFreeze({ $not: schema } as any)
+        )
+      ).toBe(!match);
     });
   });
 
@@ -657,6 +684,9 @@ describe('matchJsonToSchema.test.ts', () => {
       schema
     )} expect ${match}`, async () => {
       expect(matchJsonToSchema(input as any, schema as any)).toBe(match);
+      expect(
+        matchJsonToSchema(deepFreeze(input as any), deepFreeze(schema as any))
+      ).toBe(match);
     });
   });
 });
