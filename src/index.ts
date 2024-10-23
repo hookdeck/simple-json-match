@@ -166,9 +166,8 @@ const matchJsonToSchema = (
         indexes
       );
 
-      delete schema['$not'];
-
-      if (Object.keys(schema).length === 0 || result) {
+      // Expect length of 1 single that would imply $not is the only key
+      if (Object.keys(schema).length === 1 || result) {
         return !result;
       }
     }
@@ -181,35 +180,37 @@ const matchJsonToSchema = (
     }
 
     if (typeof schema === 'object') {
-      return !Object.entries(schema as SchemaObject).some(([key, schema]) => {
-        if (key === '$or' && Array.isArray(schema)) {
-          return !schema.some((condition_schema) =>
-            matchJsonToSchema(input, condition_schema, root_input, indexes)
-          );
-        }
-
-        if (key === '$and' && Array.isArray(schema)) {
-          return schema.some(
-            (condition_schema) =>
-              !matchJsonToSchema(input, condition_schema, root_input, indexes)
-          );
-        }
-
-        if (
-          !Array.isArray(input) &&
-          (input as { [k: string]: JSONType })[key] === undefined
-        ) {
-          let result = true;
-          if (typeof schema === 'object' && schema['$exist'] === false) {
-            result = false;
+      return !Object.entries(schema as SchemaObject)
+        .filter(([key]) => key !== '$not')
+        .some(([key, schema]) => {
+          if (key === '$or' && Array.isArray(schema)) {
+            return !schema.some((condition_schema) =>
+              matchJsonToSchema(input, condition_schema, root_input, indexes)
+            );
           }
-          if (result) {
-            return true;
-          }
-        }
 
-        return recursivelyMatchValue(input[key], schema, root_input, indexes);
-      });
+          if (key === '$and' && Array.isArray(schema)) {
+            return schema.some(
+              (condition_schema) =>
+                !matchJsonToSchema(input, condition_schema, root_input, indexes)
+            );
+          }
+
+          if (
+            !Array.isArray(input) &&
+            (input as { [k: string]: JSONType })[key] === undefined
+          ) {
+            let result = true;
+            if (typeof schema === 'object' && schema['$exist'] === false) {
+              result = false;
+            }
+            if (result) {
+              return true;
+            }
+          }
+
+          return recursivelyMatchValue(input[key], schema, root_input, indexes);
+        });
     }
 
     return !recursivelyMatchValue(input, schema, input, indexes);
